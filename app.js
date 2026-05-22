@@ -4,9 +4,19 @@ let mediaRecorder = null;
 let audioChunks = [];
 let isRecording = false;
 
+// Storage helpers — localStorage puede fallar en Safari iOS con cookies bloqueadas
+function storageGet(key) {
+    try { return localStorage.getItem(key) || sessionStorage.getItem(key) || ''; }
+    catch { return ''; }
+}
+function storageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch {}
+    try { sessionStorage.setItem(key, value); } catch {}
+}
+
 let config = {
-    apiKey: localStorage.getItem('groq_api_key') || '',
-    email:  localStorage.getItem('doctor_email')  || ''
+    apiKey: storageGet('groq_api_key'),
+    email:  storageGet('doctor_email')
 };
 
 // Elements
@@ -57,9 +67,13 @@ function saveConfig() {
     if (!apiKey || !email) { alert('Completa los dos campos.'); return; }
     config.apiKey = apiKey;
     config.email  = email;
-    localStorage.setItem('groq_api_key', apiKey);
-    localStorage.setItem('doctor_email',  email);
-    configModal.classList.add('hidden');
+    storageSet('groq_api_key', apiKey);
+    storageSet('doctor_email',  email);
+    saveConfigBtn.textContent = '✓ Guardado';
+    setTimeout(() => {
+        saveConfigBtn.textContent = 'Guardar';
+        configModal.classList.add('hidden');
+    }, 800);
 }
 
 // ── Recording ─────────────────────────────────────────────────────────────────
@@ -278,7 +292,12 @@ function sendEmail() {
     const type    = document.getElementById('report-type').value;
     const subject = `Informe médico — ${typeLabels[type] || type}`;
     const body    = reportEl.textContent;
-    window.location.href = `mailto:${config.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Abre Gmail directamente (evita el selector de apps del sistema)
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1`
+        + `&to=${encodeURIComponent(config.email)}`
+        + `&su=${encodeURIComponent(subject)}`
+        + `&body=${encodeURIComponent(body)}`;
+    window.open(gmailUrl, '_blank');
 }
 
 function resetApp() {

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Informes Médicos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Modal de configuración -->
+    <div id="config-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Configuración</h2>
+            <label>API Key de Groq</label>
+            <input type="password" id="api-key-input" placeholder="gsk_...">
+            <label>Tu correo electrónico</label>
+            <input type="email" id="email-input" placeholder="doctor@hospital.es">
+            <button id="save-config" class="btn-primary">Guardar</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div>
+                    <h1>Informes Médicos</h1>
+                    <p class="subtitle">Neumología</p>
+                </div>
+                <button id="config-btn" class="btn-icon" title="Configuración">⚙️</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Tipo de informe -->
+            <div class="card">
+                <label class="field-label">Tipo de informe</label>
+                <select id="report-type">
+                    <option value="alta">Alta hospitalaria</option>
+                    <option value="consulta">Consulta / Seguimiento</option>
+                    <option value="interconsulta">Interconsulta</option>
+                    <option value="urgencias">Urgencias</option>
+                    <option value="inss">Incapacidad laboral (INSS)</option>
+                </select>
+            </div>
+
+            <!-- Grabación -->
+            <div class="card record-card">
+                <button id="record-btn" class="record-btn">
+                    <span class="record-icon">🎙️</span>
+                    <span id="record-label">Pulsa para grabar</span>
+                </button>
+                <div id="recording-status" class="recording-status hidden">
+                    <span class="dot"></span> Grabando — pulsa para detener
+                </div>
+                <p class="record-hint">Habla con naturalidad. Incluye datos del paciente, diagnóstico, tratamiento...</p>
+            </div>
+
+            <!-- Cargando -->
+            <div id="loading" class="card loading-card hidden">
+                <div class="spinner"></div>
+                <p id="loading-text">Procesando...</p>
+            </div>
+
+            <!-- Transcripción -->
+            <div id="transcript-section" class="card hidden">
+                <label class="field-label">Lo que has dictado</label>
+                <div id="transcript" class="text-box" contenteditable="true" spellcheck="false"></div>
+                <button id="generate-btn" class="btn-primary mt">Generar informe</button>
+            </div>
+
+            <!-- Informe generado -->
+            <div id="report-section" class="card hidden">
+                <label class="field-label">Informe generado</label>
+                <div id="report" class="text-box report-box" contenteditable="true" spellcheck="true"></div>
+                <div class="report-actions">
+                    <button id="copy-btn" class="btn-secondary">Copiar</button>
+                    <button id="email-btn" class="btn-primary">Enviar por email</button>
+                </div>
+                <button id="new-btn" class="btn-ghost">Nuevo informe</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
